@@ -82,52 +82,36 @@ _constraints = [
     [8, 17, 26, 35, 44, 53, 60, 61, 62, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79]
 ]
 
-def printPuzzle(A):
-    for i, v in enumerate(A):
-        s = "{0:d} ".format(v)
-        if i%9 == 8:
-            print(s,)
-        else:
-            print(s, end='')
+#todo: use this method and immutable strings
+#text = 'abcdefg'
+#text = text[:1] + 'Z' + text[2:]
+
+def printPuzzle(s):
+    #print(s)
+    for i in range(9): print(s[9*i:9*(i+1)])
     
 def getPossibleValues(A, i):
-    possible = set(range(1,10))
+    possible = {'1','2','3','4','5','6','7','8','9'}
     used = set()
     for v in _constraints[i]:
         used.add(A[v])
     return possible - used
 
-def _solve(A, i):
-    while(i<80 and A[i]>0): 
-        i=i+1
-    if(i==81): 
-        return True
-    p = getPossibleValues(A, i)
-    print(i, p)
+def _solve(s, i=0):
+    print(s)
+    if(i==81): return s
+    if(s[i]>'0'): return _solve(s,i+1)
+    p = getPossibleValues(s, i)
     for v in p:
-        A[i] = v
-        if _solve(A, i+1): return True
-    A[i] = 0
-    return False
+        r = _solve(s[:i] + v + s[i+1:], i+1)
+        if r is not None: 
+            return r
+    return None
 
-def solve(A):
-    found = True
-    while(found):
-        found = False
-        for i in range(81):
-            p = getPossibleValues(A,i)
-            print(i, p)
-            if(A[i] == 0 & len(p)==1): 
-                A[i] = p.pop()
-                found = True
-    return _solve(A, 0)
-
-
-with open('puzzles.txt', 'rb') as file:
+with open('puzzles.txt', 'r') as file:
     for s in file:
-        A = bytearray(x-48 for x in s[:81])
         print('original:')
-        printPuzzle(A)
-        r = solve(A)
-        print('solved: {0}', r)
-        printPuzzle(A)
+        printPuzzle(s)
+        r = _solve(s)
+        print('solved:')
+        printPuzzle(r)
