@@ -82,27 +82,23 @@ _constraints = [
     [8, 17, 26, 35, 44, 53, 60, 61, 62, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79]
 ]
 
-#todo: use this method and immutable strings
-#text = 'abcdefg'
-#text = text[:1] + 'Z' + text[2:]
-
 def printPuzzle(s):
     #print(s)
     for i in range(9): print(s[9*i:9*(i+1)])
     
 def getPossibleValues(A, i):
-    possible = {'1','2','3','4','5','6','7','8','9'}
-    used = set()
+    used = int()
     for v in _constraints[i]:
-        used.add(A[v])
-    return possible - used
+        used |= (1 << (ord(A[v])-48)) 
+    for i in range(1,10):
+        if not(used & (1 << i)): 
+            yield chr(i+48)
 
 def _solve(s, i=0):
-    print(s)
+    #if i <= 5: print(s[:5])
     if(i==81): return s
     if(s[i]>'0'): return _solve(s,i+1)
-    p = getPossibleValues(s, i)
-    for v in p:
+    for v in getPossibleValues(s, i):
         r = _solve(s[:i] + v + s[i+1:], i+1)
         if r is not None: 
             return r
