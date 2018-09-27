@@ -106,8 +106,9 @@ def _solve(s, i=0):
 
 with open('puzzles.txt', 'r') as file:
     for s in file:
-        print('original:')
-        printPuzzle(s)
+    #    print('original:')
+    #    printPuzzle(s)
         r = _solve(s)
-        print('solved:')
-        printPuzzle(r)
+    #    print('solved:')
+    #    printPuzzle(r)
+        print(r)
